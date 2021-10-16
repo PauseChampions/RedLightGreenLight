@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace ReaxtIsASussyBaka.GameObjects
+namespace ReaxtIsASussyBaka.GameScene
 {
     internal class RedLight : MonoBehaviour, IInitializable, IDisposable
     {
@@ -15,17 +15,16 @@ namespace ReaxtIsASussyBaka.GameObjects
         private Queue<float> pausePoints;
 
         [Inject]
-        public void Construct(AudioTimeSyncController audioTimeSyncController, BeatmapObjectCallbackController beatmapObjectCallbackController, Judge timer)
+        public void Construct(AudioTimeSyncController audioTimeSyncController, BeatmapObjectCallbackController beatmapObjectCallbackController, Judge judge)
         {
             this.audioTimeSyncController = audioTimeSyncController;
             this.beatmapObjectCallbackController = beatmapObjectCallbackController;
-            this.judge = timer;
+            this.judge = judge;
         }
 
         public void Initialize()
         {
             rdm = new System.Random();
-            judge.TimerStoppedEvent += OnBlueLight;
 
             pausePoints = new Queue<float>();
             float songLength = audioTimeSyncController.songLength;
@@ -46,11 +45,15 @@ namespace ReaxtIsASussyBaka.GameObjects
                     oddIncrement /= 2;
                 }
             }
+
+            judge.TimerStartedEvent += OnRedLight;
+            judge.TimerStoppedEvent += OnGreenLight;
         }
 
         public void Dispose()
         {
-            judge.TimerStoppedEvent -= OnBlueLight;
+            judge.TimerStartedEvent -= OnRedLight;
+            judge.TimerStoppedEvent -= OnGreenLight;
         }
 
         private float GetRandomFloatFromMinMax(float min, float max) => (float)(rdm.NextDouble() * (min - max) + min);
@@ -59,29 +62,29 @@ namespace ReaxtIsASussyBaka.GameObjects
         {
             if (audioTimeSyncController.songTime >= pausePoints.Peek())
             {
-                OnRedLight();
+                judge.StartTimer(PluginConfig.Instance.RedLightTime);
+                audioTimeSyncController.Pause();
+                pausePoints.Dequeue();
             }
         }
 
         private void OnRedLight()
         {
-            audioTimeSyncController.Pause();
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event0, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event2, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event3, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event4, 5, 1));
-            judge.StartTimer(PluginConfig.Instance.RedLightTime);
-            pausePoints.Dequeue();
 
             enabled = pausePoints.Count > 0;
         }
 
-        private void OnBlueLight()
+        private void OnGreenLight()
         {
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event0, 1, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event2, 1, 0));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event3, 1, 0));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event4, 1, 1));
+            
             audioTimeSyncController.Resume();
         }
     }

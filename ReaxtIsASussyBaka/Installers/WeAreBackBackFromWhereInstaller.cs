@@ -1,4 +1,4 @@
-﻿using ReaxtIsASussyBaka.GameObjects;
+﻿using ReaxtIsASussyBaka.GameScene;
 using Zenject;
 
 namespace ReaxtIsASussyBaka.Installers
@@ -9,6 +9,7 @@ namespace ReaxtIsASussyBaka.Installers
         {
             Container.BindInterfacesAndSelfTo<RedLight>().FromNewComponentOnRoot().AsSingle();
             Container.BindInterfacesAndSelfTo<Judge>().FromNewComponentOnRoot().AsSingle();
+            Container.Bind<AudioPlayer>().AsSingle();
         }
     }
 }

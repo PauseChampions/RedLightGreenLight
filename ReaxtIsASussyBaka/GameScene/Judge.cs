@@ -2,19 +2,21 @@
 using UnityEngine;
 using Zenject;
 
-namespace ReaxtIsASussyBaka.GameObjects
+namespace ReaxtIsASussyBaka.GameScene
 {
-    internal class Judge : MonoBehaviour
+    internal class Judge : MonoBehaviour, IInitializable, IDisposable
     {
         public float RemainingTime { get; private set; }
+        public event Action TimerStartedEvent;
         public event Action TimerStoppedEvent;
 
+        private AudioPlayer audioPlayer;
         private GameEnergyCounter gameEnergyCounter;
         private Transform hmd;
         private Transform leftController;
         private Transform rightController;
 
-        private const float positionRange = 1f;
+        private const float positionRange = 2f;
         private const float rotationRange = 15f;
 
         private Vector3 hmdOriginalPos;
@@ -26,12 +28,23 @@ namespace ReaxtIsASussyBaka.GameObjects
         private Vector3 rightControllerOriginalRot;
 
         [Inject]
-        public void Construct(SaberManager saberManager, GameEnergyCounter gameEnergyCounter)
+        public void Construct(AudioPlayer audioPlayer, SaberManager saberManager, GameEnergyCounter gameEnergyCounter)
         {
+            this.audioPlayer = audioPlayer;
             hmd = saberManager.GetComponentInChildren<MainCamera>().transform;
             leftController = saberManager.leftSaber.GetComponentInParent<VRController>().transform;
             rightController = saberManager.rightSaber.GetComponentInParent<VRController>().transform;
             this.gameEnergyCounter = gameEnergyCounter;
+        }
+
+        public void Initialize()
+        {
+            audioPlayer.ClipFinishedEvent += EnableTimer;
+        }
+
+        public void Dispose()
+        {
+            audioPlayer.ClipFinishedEvent -= EnableTimer;
         }
 
         public void Start() => enabled = false;
@@ -42,13 +55,14 @@ namespace ReaxtIsASussyBaka.GameObjects
             if (RemainingTime <= 0)
             {
                 StopTimer();
-                TimerStoppedEvent?.Invoke();
             }
 
             if (!(PositionAndRotationWithinRange(hmd, hmdOriginalPos, hmdOriginalRot) &&
                     PositionAndRotationWithinRange(leftController, leftControllerOriginalPos, leftControllerOriginalRot) &&
                     PositionAndRotationWithinRange(rightController, rightControllerOriginalPos, rightControllerOriginalRot)))
             {
+                audioPlayer.PlayPrr();
+                enabled = false;
                 gameEnergyCounter.ProcessEnergyChange(-gameEnergyCounter.energy);
             }
         }
@@ -73,10 +87,14 @@ namespace ReaxtIsASussyBaka.GameObjects
             return finalJudgement;
         }
 
-        internal void StartTimer(float time)
+        public void StartTimer(float time)
         {
             RemainingTime = time;
+            audioPlayer.PlayRedLight();
+        }
 
+        private void EnableTimer()
+        {
             hmdOriginalPos = hmd.position;
             hmdOriginalRot = hmd.eulerAngles;
 
@@ -86,9 +104,15 @@ namespace ReaxtIsASussyBaka.GameObjects
             rightControllerOriginalPos = rightController.position;
             rightControllerOriginalRot = rightController.eulerAngles;
 
+            TimerStartedEvent?.Invoke();
             enabled = true;
         }
 
-        internal void StopTimer() => enabled = false;
+        public void StopTimer()
+        {
+            enabled = false;
+            audioPlayer.PlayGreenLight();
+            TimerStoppedEvent?.Invoke();
+        }
     }
 }
