@@ -2,6 +2,7 @@
 using IPA.Config;
 using IPA.Config.Stores;
 using ReaxtIsASussyBaka.Installers;
+using ReaxtIsASussyBaka.UI;
 using SiraUtil.Zenject;
 using System;
 using System.Collections;
@@ -36,7 +37,8 @@ namespace ReaxtIsASussyBaka
             Instance = this;
             Plugin.Log = logger;
             Plugin.Log?.Debug("Logger initialized.");
-            zenjector.OnGame<WeAreBackBackFromWhereInstaller>();
+            zenjector.On<MainSettingsMenuViewControllersInstaller>().Pseudo(Container => Container.BindInterfacesTo<ModifierViewController>().AsSingle());
+            zenjector.OnGame<WeAreBackBackFromWhereInstaller>().OnlyForStandard();
         }
 
         #region BSIPA Config

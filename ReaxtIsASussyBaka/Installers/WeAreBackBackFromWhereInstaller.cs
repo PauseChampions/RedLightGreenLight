@@ -1,4 +1,5 @@
-﻿using ReaxtIsASussyBaka.GameScene;
+﻿using ReaxtIsASussyBaka.Configuration;
+using ReaxtIsASussyBaka.GameScene;
 using Zenject;
 
 namespace ReaxtIsASussyBaka.Installers
@@ -7,9 +8,12 @@ namespace ReaxtIsASussyBaka.Installers
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesAndSelfTo<RedLight>().FromNewComponentOnRoot().AsSingle();
-            Container.BindInterfacesAndSelfTo<Judge>().FromNewComponentOnRoot().AsSingle();
-            Container.Bind<AudioPlayer>().AsSingle();
+            if (PluginConfig.Instance.ModEnabled)
+            {
+                Container.BindInterfacesAndSelfTo<RedLight>().FromNewComponentOnRoot().AsSingle();
+                Container.BindInterfacesAndSelfTo<Judge>().FromNewComponentOnRoot().AsSingle();
+                Container.Bind<AudioPlayer>().AsSingle();
+            }
         }
     }
 }

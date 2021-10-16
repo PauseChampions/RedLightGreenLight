@@ -8,6 +8,7 @@ namespace ReaxtIsASussyBaka.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
+        public virtual bool ModEnabled { get; set; } = false;
         public virtual float PauseDelay { get; set; } = 15f;
         public virtual float RedLightTime { get; set; } = 4f;
 
