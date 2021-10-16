@@ -8,7 +8,7 @@ namespace ReaxtIsASussyBaka.Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<RedLight>().FromNewComponentOnRoot().AsSingle();
-            Container.BindInterfacesAndSelfTo<Timer>().FromNewComponentOnRoot().AsSingle();
+            Container.BindInterfacesAndSelfTo<Judge>().FromNewComponentOnRoot().AsSingle();
         }
     }
 }

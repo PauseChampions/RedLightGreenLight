@@ -10,40 +10,22 @@ namespace ReaxtIsASussyBaka.GameObjects
     {
         private AudioTimeSyncController audioTimeSyncController;
         private BeatmapObjectCallbackController beatmapObjectCallbackController;
-        private GameEnergyCounter gameEnergyCounter;
-        private Timer timer;
+        private Judge judge;
         private System.Random rdm;
         private Queue<float> pausePoints;
 
-        private Transform leftController;
-        private Transform rightController;
-
-        private const float positionRange = 1f;
-        private const float rotationRange = 15f;
-
-        private Vector3 leftControllerOriginalPos;
-        private Vector3 leftControllerOriginalRot;
-
-        private Vector3 rightControllerOriginalPos;
-        private Vector3 rightControllerOriginalRot;
-
         [Inject]
-        public void Construct(AudioTimeSyncController audioTimeSyncController, BeatmapObjectCallbackController beatmapObjectCallbackController, Timer timer,
-            SaberManager saberManager, GameEnergyCounter gameEnergyCounter)
+        public void Construct(AudioTimeSyncController audioTimeSyncController, BeatmapObjectCallbackController beatmapObjectCallbackController, Judge timer)
         {
             this.audioTimeSyncController = audioTimeSyncController;
             this.beatmapObjectCallbackController = beatmapObjectCallbackController;
-            this.gameEnergyCounter = gameEnergyCounter;
-            this.timer = timer;
-
-            leftController = saberManager?.leftSaber.GetComponentInParent<VRController>().transform;
-            rightController = saberManager?.rightSaber.GetComponentInParent<VRController>().transform;
+            this.judge = timer;
         }
 
         public void Initialize()
         {
             rdm = new System.Random();
-            timer.TimerStoppedEvent += OnBlueLight;
+            judge.TimerStoppedEvent += OnBlueLight;
 
             pausePoints = new Queue<float>();
             float songLength = audioTimeSyncController.songLength;
@@ -68,7 +50,7 @@ namespace ReaxtIsASussyBaka.GameObjects
 
         public void Dispose()
         {
-            timer.TimerStoppedEvent -= OnBlueLight;
+            judge.TimerStoppedEvent -= OnBlueLight;
         }
 
         private float GetRandomFloatFromMinMax(float min, float max) => (float)(rdm.NextDouble() * (min - max) + min);
@@ -79,28 +61,6 @@ namespace ReaxtIsASussyBaka.GameObjects
             {
                 OnRedLight();
             }
-
-            if (timer.enabled)
-            {
-                if (!(PositionAndRotationWithinRange(leftController, leftControllerOriginalPos, leftControllerOriginalRot) &&
-                    PositionAndRotationWithinRange(rightController, rightControllerOriginalPos, rightControllerOriginalRot)))
-                {
-                    gameEnergyCounter.ProcessEnergyChange(-gameEnergyCounter.energy);
-                }
-            }
-        }
-
-        private bool PositionAndRotationWithinRange(Transform controller, Vector3 originalPos, Vector3 originalRot)
-        {
-            bool xPositionWithinRange = originalPos.x + positionRange > controller.position.x && originalPos.x - positionRange < controller.position.x;
-            bool yPositionWithinRange = originalPos.y + positionRange > controller.position.y && originalPos.y - positionRange < controller.position.y;
-            bool zPositionWithinRange = originalPos.z + positionRange > controller.position.z && originalPos.z - positionRange < controller.position.z;
-
-            bool xRotationWithinRange = originalRot.x + rotationRange > controller.eulerAngles.x && originalRot.x - rotationRange < controller.eulerAngles.x;
-            bool yRotationWithinRange = originalRot.y + rotationRange > controller.eulerAngles.y && originalRot.y - rotationRange < controller.eulerAngles.y;
-            bool zRotationWithinRange = originalRot.z + rotationRange > controller.eulerAngles.z && originalRot.z - rotationRange < controller.eulerAngles.z;
-
-            return xPositionWithinRange && yPositionWithinRange && zPositionWithinRange && xRotationWithinRange && yRotationWithinRange && zRotationWithinRange;
         }
 
         private void OnRedLight()
@@ -110,14 +70,8 @@ namespace ReaxtIsASussyBaka.GameObjects
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event2, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event3, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event4, 5, 1));
-            timer.StartTimer(PluginConfig.Instance.RedLightTime);
+            judge.StartTimer(PluginConfig.Instance.RedLightTime);
             pausePoints.Dequeue();
-
-            leftControllerOriginalPos = leftController.position;
-            leftControllerOriginalRot = leftController.eulerAngles;
-
-            rightControllerOriginalPos = rightController.position;
-            rightControllerOriginalRot = rightController.eulerAngles;
 
             enabled = pausePoints.Count > 0;
         }
