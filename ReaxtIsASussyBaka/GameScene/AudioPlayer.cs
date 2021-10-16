@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.IO;
 using IPA.Utilities;
-using System.Reflection;
 using System.Threading;
 
 namespace ReaxtIsASussyBaka.GameScene
@@ -12,11 +11,12 @@ namespace ReaxtIsASussyBaka.GameScene
     {
         private readonly CachedMediaAsyncLoader cachedMediaAsyncLoader;
         private readonly AudioTimeSyncController audioTimeSyncController;
+        private readonly System.Random rdm;
         private AudioSource audioSource;
 
-        private readonly FileInfo redLight = new FileInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "RedLight.ogg"));
-        private readonly FileInfo greenLight = new FileInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "GreenLight.ogg"));
-        private readonly FileInfo prr = new FileInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "Prr.ogg"));
+        private readonly DirectoryInfo redLight = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "RedLight"));
+        private readonly DirectoryInfo greenLight = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "GreenLight"));
+        private readonly DirectoryInfo prr = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "Gun"));
 
         public event Action ClipFinishedEvent;
 
@@ -24,31 +24,17 @@ namespace ReaxtIsASussyBaka.GameScene
         {
             this.cachedMediaAsyncLoader = cachedMediaAsyncLoader;
             this.audioTimeSyncController = audioTimeSyncController;
+            rdm = new System.Random();
         }
 
-        public void PlayRedLight() => PlayClip(redLight, "ReaxtIsASussyBaka.VoiceClips.RedLight.ogg", true);
+        public void PlayRedLight() => PlayClip(redLight, true);
+        public void PlayGreenLight() => PlayClip(greenLight, true);
+        public void PlayPrr() => PlayClip(prr);
 
-        public void PlayGreenLight() => PlayClip(greenLight, "ReaxtIsASussyBaka.VoiceClips.GreenLight.ogg", true);
-        public void PlayPrr() => PlayClip(prr, "ReaxtIsASussyBaka.VoiceClips.Prr.ogg");
-
-
-        private async void PlayClip(FileInfo file, string assemblyPath, bool notifyFinished = false)
+        private async void PlayClip(DirectoryInfo dir, bool notifyFinished = false)
         {
-            if (!file.Directory.Exists)
-            {
-                redLight.Directory.Create();
-            }
-
-            if (!file.Exists)
-            {
-                using (var manifestStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(assemblyPath))
-                {
-                    using (var fs = File.Create(file.FullName))
-                    {
-                        await manifestStream.CopyToAsync(fs);
-                    }
-                }
-            }
+            var files = dir.GetFiles();
+            var file = files[rdm.Next(0, files.Length)];
 
             if (file.Exists)
             {

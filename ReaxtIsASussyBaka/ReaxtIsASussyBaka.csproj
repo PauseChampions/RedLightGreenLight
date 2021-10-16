@@ -102,9 +102,6 @@
 		<EmbeddedResource Include="Images\Skalx.jpg" />
 		<EmbeddedResource Include="manifest.json" />
 		<EmbeddedResource Include="UI\ModifierView.bsml" />
-		<EmbeddedResource Include="VoiceClips\GreenLight.ogg" />
-		<EmbeddedResource Include="VoiceClips\Prr.ogg" />
-		<EmbeddedResource Include="VoiceClips\RedLight.ogg" />
 		<EmbeddedResource Include="Images\*.png" />
 		<EmbeddedResource Include="UI\Views\*.bsml" />
 	</ItemGroup>
@@ -112,9 +109,6 @@
 	<ItemGroup>
 	  <None Remove="Images\Skalx.jpg" />
 	  <None Remove="UI\ModifierView.bsml" />
-	  <None Remove="VoiceClips\GreenLight.ogg" />
-	  <None Remove="VoiceClips\Prr.ogg" />
-	  <None Remove="VoiceClips\RedLight.ogg" />
 	</ItemGroup>
 
 	<ItemGroup>
