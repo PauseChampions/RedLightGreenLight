@@ -11,11 +11,15 @@ namespace ReaxtIsASussyBaka.GameObjects
     {
         public float InitialTime;
         public float CurrentTime { get; private set; }
+
+        public void Start() => enabled = false;
+
         public void Update()
         {
             CurrentTime -= Time.deltaTime;
             if (CurrentTime <= 0)
             {
+                StopTimer();
                 TimerStoppedEvent?.Invoke();
             }
         }
