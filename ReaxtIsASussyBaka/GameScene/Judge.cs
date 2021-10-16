@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReaxtIsASussyBaka.Configuration;
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -16,8 +17,8 @@ namespace ReaxtIsASussyBaka.GameScene
         private Transform leftController;
         private Transform rightController;
 
-        private const float positionRange = 2f;
-        private const float rotationRange = 15f;
+        private readonly float positionRange = PluginConfig.Instance.PositionRange;
+        private readonly float rotationRange = PluginConfig.Instance.RotationRange;
 
         private Vector3 hmdOriginalPos;
         private Vector3 leftControllerOriginalPos;

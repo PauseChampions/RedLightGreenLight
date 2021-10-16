@@ -11,6 +11,8 @@ namespace ReaxtIsASussyBaka.Configuration
         public virtual bool ModEnabled { get; set; } = false;
         public virtual float PauseDelay { get; set; } = 15f;
         public virtual float RedLightTime { get; set; } = 4f;
+        public virtual float PositionRange { get; set; } = 1.5f;
+        public virtual float RotationRange { get; set; } = 15f;
 
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
