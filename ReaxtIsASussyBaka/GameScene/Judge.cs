@@ -27,6 +27,8 @@ namespace ReaxtIsASussyBaka.GameScene
         private Vector3 rightControllerOriginalPos;
         private Vector3 rightControllerOriginalRot;
 
+        private bool greenLightPlayed;
+
         [Inject]
         public void Construct(AudioPlayer audioPlayer, SaberManager saberManager, GameEnergyCounter gameEnergyCounter)
         {
@@ -39,12 +41,12 @@ namespace ReaxtIsASussyBaka.GameScene
 
         public void Initialize()
         {
-            audioPlayer.ClipFinishedEvent += EnableTimer;
+            audioPlayer.ClipFinishedEvent += ToggleTimer;
         }
 
         public void Dispose()
         {
-            audioPlayer.ClipFinishedEvent -= EnableTimer;
+            audioPlayer.ClipFinishedEvent -= ToggleTimer;
         }
 
         public void Start() => enabled = false;
@@ -52,9 +54,10 @@ namespace ReaxtIsASussyBaka.GameScene
         public void Update()
         {
             RemainingTime -= Time.deltaTime;
-            if (RemainingTime <= 0)
+            if (RemainingTime <= 0 && !greenLightPlayed)
             {
-                StopTimer();
+                greenLightPlayed = true;
+                audioPlayer.PlayGreenLight();
             }
 
             if (!(PositionAndRotationWithinRange(hmd, hmdOriginalPos, hmdOriginalRot) &&
@@ -90,7 +93,20 @@ namespace ReaxtIsASussyBaka.GameScene
         public void StartTimer(float time)
         {
             RemainingTime = time;
+            greenLightPlayed = false;
             audioPlayer.PlayRedLight();
+        }
+
+        private void ToggleTimer()
+        {
+            if (RemainingTime <= 0)
+            {
+                DisableTimer();
+            }
+            else
+            {
+                EnableTimer();
+            }
         }
 
         private void EnableTimer()
@@ -108,10 +124,8 @@ namespace ReaxtIsASussyBaka.GameScene
             enabled = true;
         }
 
-        public void StopTimer()
+        public void DisableTimer()
         {
-            enabled = false;
-            audioPlayer.PlayGreenLight();
             TimerStoppedEvent?.Invoke();
         }
     }

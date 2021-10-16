@@ -28,7 +28,7 @@ namespace ReaxtIsASussyBaka.GameScene
 
         public void PlayRedLight() => PlayClip(redLight, "ReaxtIsASussyBaka.VoiceClips.RedLight.ogg", true);
 
-        public void PlayGreenLight() => PlayClip(greenLight, "ReaxtIsASussyBaka.VoiceClips.GreenLight.ogg");
+        public void PlayGreenLight() => PlayClip(greenLight, "ReaxtIsASussyBaka.VoiceClips.GreenLight.ogg", true);
         public void PlayPrr() => PlayClip(prr, "ReaxtIsASussyBaka.VoiceClips.Prr.ogg");
 
 
