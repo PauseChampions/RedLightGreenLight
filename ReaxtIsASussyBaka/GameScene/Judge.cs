@@ -20,6 +20,8 @@ namespace ReaxtIsASussyBaka.GameScene
         private readonly float positionRange = PluginConfig.Instance.PositionRange;
         private readonly float rotationRange = PluginConfig.Instance.RotationRange;
 
+        private bool reaxt;
+
         private Vector3 hmdOriginalPos;
         private Vector3 leftControllerOriginalPos;
         private Vector3 leftControllerOriginalRot;
@@ -41,6 +43,7 @@ namespace ReaxtIsASussyBaka.GameScene
         public void Initialize()
         {
             audioPlayer.ClipFinishedEvent += EnableTimer;
+            reaxt = false;
         }
 
         public void Dispose()
@@ -90,8 +93,14 @@ namespace ReaxtIsASussyBaka.GameScene
 
         public void StartTimer(float time)
         {
+            if (reaxt)
+            {
+                return;
+            }
+            Plugin.Log.Debug("Timer on");
             RemainingTime = time;
             audioPlayer.PlayRedLight();
+            reaxt = true;
         }
 
         private void EnableTimer()
@@ -111,6 +120,8 @@ namespace ReaxtIsASussyBaka.GameScene
 
         public void StopTimer()
         {
+            Plugin.Log.Debug("Stopping timer");
+            reaxt = false;
             enabled = false;
             audioPlayer.PlayGreenLight();
             TimerStoppedEvent?.Invoke();

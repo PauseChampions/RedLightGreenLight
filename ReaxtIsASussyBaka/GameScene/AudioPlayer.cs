@@ -28,7 +28,7 @@ namespace ReaxtIsASussyBaka.GameScene
         }
 
         public void PlayRedLight() => PlayClip(redLight, true);
-        public void PlayGreenLight() => PlayClip(greenLight, true);
+        public void PlayGreenLight() => PlayClip(greenLight);
         public void PlayPrr() => PlayClip(prr);
 
         private async void PlayClip(DirectoryInfo dir, bool notifyFinished = false)
