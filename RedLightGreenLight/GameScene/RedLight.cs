@@ -41,7 +41,7 @@ namespace RedLightGreenLight.GameScene
                 while (rdm.NextDouble() >= extraPauseOdds)
                 {
                     pausePoints.Enqueue(GetRandomFloatFromMinMax(minTime, maxTime));
-                    extraPauseOdds = extraPauseOdds + oddIncrement;
+                    extraPauseOdds += oddIncrement;
                     oddIncrement /= 2;
                 }
             }

@@ -7,28 +7,19 @@ namespace RedLightGreenLight.GameScene
 {
     internal class Judge : MonoBehaviour, IInitializable, IDisposable
     {
-        public float RemainingTime { get; private set; }
+        public float remainingTime;
         public event Action TimerStartedEvent;
         public event Action TimerStoppedEvent;
 
         private AudioPlayer audioPlayer;
         private GameEnergyCounter gameEnergyCounter;
-        private Transform hmd;
-        private Transform leftController;
-        private Transform rightController;
 
         private readonly float positionRange = PluginConfig.Instance.PositionRange;
         private readonly float rotationRange = PluginConfig.Instance.RotationRange;
 
-        private bool reaxt;
-
-        private Vector3 hmdOriginalPos;
-        private Vector3 leftControllerOriginalPos;
-        private Vector3 leftControllerOriginalRot;
-
-        private Vector3 hmdOriginalRot;
-        private Vector3 rightControllerOriginalPos;
-        private Vector3 rightControllerOriginalRot;
+        private Transform hmd, leftController, rightController;
+        private Vector3 hmdOriginalPos, leftControllerOriginalPos, rightControllerOriginalPos;
+        private Vector3 hmdOriginalRot, leftControllerOriginalRot, rightControllerOriginalRot;
 
         [Inject]
         public void Construct(AudioPlayer audioPlayer, SaberManager saberManager, GameEnergyCounter gameEnergyCounter)
@@ -43,7 +34,6 @@ namespace RedLightGreenLight.GameScene
         public void Initialize()
         {
             audioPlayer.ClipFinishedEvent += EnableTimer;
-            reaxt = false;
         }
 
         public void Dispose()
@@ -55,17 +45,18 @@ namespace RedLightGreenLight.GameScene
 
         public void Update()
         {
-            RemainingTime -= Time.deltaTime;
-            if (RemainingTime <= 0)
+            remainingTime -= Time.deltaTime;
+            if (remainingTime <= 0)
             {
                 StopTimer();
+                return;
             }
 
             if (!(PositionAndRotationWithinRange(hmd, hmdOriginalPos, hmdOriginalRot) &&
                     PositionAndRotationWithinRange(leftController, leftControllerOriginalPos, leftControllerOriginalRot) &&
                     PositionAndRotationWithinRange(rightController, rightControllerOriginalPos, rightControllerOriginalRot)))
             {
-                audioPlayer.PlayPrr();
+                audioPlayer.PlayGun();
                 enabled = false;
                 gameEnergyCounter.ProcessEnergyChange(-gameEnergyCounter.energy);
             }
@@ -93,35 +84,33 @@ namespace RedLightGreenLight.GameScene
 
         public void StartTimer(float time)
         {
-            if (reaxt)
-            {
-                return;
-            }
             Plugin.Log.Debug("Timer on");
-            RemainingTime = time;
+            remainingTime = time;
             audioPlayer.PlayRedLight();
-            reaxt = true;
         }
 
         private void EnableTimer()
         {
-            hmdOriginalPos = hmd.position;
-            hmdOriginalRot = hmd.eulerAngles;
+            GetPositionFromTransform(hmd, out hmdOriginalPos);
+            GetRotationFromTransform(hmd, out hmdOriginalRot);
 
-            leftControllerOriginalPos = leftController.position;
-            leftControllerOriginalRot = leftController.eulerAngles;
+            GetPositionFromTransform(leftController, out leftControllerOriginalPos);
+            GetRotationFromTransform(leftController, out leftControllerOriginalRot);
 
-            rightControllerOriginalPos = rightController.position;
-            rightControllerOriginalRot = rightController.eulerAngles;
+            GetPositionFromTransform(rightController, out rightControllerOriginalPos);
+            GetRotationFromTransform(rightController, out rightControllerOriginalRot);
 
             TimerStartedEvent?.Invoke();
             enabled = true;
         }
 
+        private void GetRotationFromTransform(Transform obj, out Vector3 rotation) => rotation = obj.eulerAngles;
+
+        private void GetPositionFromTransform(Transform obj, out Vector3 position) => position = obj.position;
+
         public void StopTimer()
         {
             Plugin.Log.Debug("Stopping timer");
-            reaxt = false;
             enabled = false;
             audioPlayer.PlayGreenLight();
             TimerStoppedEvent?.Invoke();

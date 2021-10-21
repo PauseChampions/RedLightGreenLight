@@ -14,9 +14,11 @@ namespace RedLightGreenLight.GameScene
         private readonly System.Random rdm;
         private AudioSource audioSource;
 
-        private readonly DirectoryInfo redLight = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "RedLight"));
-        private readonly DirectoryInfo greenLight = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "GreenLight"));
-        private readonly DirectoryInfo prr = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "Gun"));
+        private readonly DirectoryInfo redLighDir = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "RedLight"));
+        private readonly DirectoryInfo greenLightDir = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "GreenLight"));
+        private readonly DirectoryInfo gunDir = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, "HelloMontrealCrew", "Gun"));
+
+        private FileInfo[] redLightAudioFiles, greenLightAudioFiles, gunAudioFiles;
 
         public event Action ClipFinishedEvent;
 
@@ -24,35 +26,33 @@ namespace RedLightGreenLight.GameScene
         {
             this.cachedMediaAsyncLoader = cachedMediaAsyncLoader;
             this.audioTimeSyncController = audioTimeSyncController;
+            redLightAudioFiles = redLighDir.GetFiles();
+            greenLightAudioFiles = greenLightDir.GetFiles();
+            gunAudioFiles = gunDir.GetFiles();
             rdm = new System.Random();
         }
 
-        public void PlayRedLight() => PlayClip(redLight, true);
-        public void PlayGreenLight() => PlayClip(greenLight);
-        public void PlayPrr() => PlayClip(prr);
+        public void PlayRedLight() => PlayClip(redLightAudioFiles, true);
+        public void PlayGreenLight() => PlayClip(greenLightAudioFiles);
+        public void PlayGun() => PlayClip(gunAudioFiles);
 
-        private async void PlayClip(DirectoryInfo dir, bool notifyFinished = false)
+        private async void PlayClip(FileInfo[] audioFiles, bool notifyFinished = false)
         {
-            var files = dir.GetFiles();
-            var file = files[rdm.Next(0, files.Length)];
-
-            if (file.Exists)
+            FileInfo audioToPlay = audioFiles[rdm.Next(0, audioFiles.Length)];
+            AudioClip audioClip = await cachedMediaAsyncLoader.LoadAudioClipAsync(audioToPlay.FullName, CancellationToken.None);
+            if (audioClip != null)
             {
-                var audioClip = await cachedMediaAsyncLoader.LoadAudioClipAsync(file.FullName, CancellationToken.None);
-                if (audioClip != null)
+                if (audioSource == null)
                 {
-                    if (audioSource == null)
-                    {
-                        audioSource = new GameObject("RedLight AudioSource").AddComponent<AudioSource>();
-                        audioSource.outputAudioMixerGroup = audioTimeSyncController.audioSource.outputAudioMixerGroup;
-                    }
-                    audioSource.PlayOneShot(audioClip, 15f);
+                    audioSource = new GameObject("RedLight AudioSource").AddComponent<AudioSource>();
+                    audioSource.outputAudioMixerGroup = audioTimeSyncController.audioSource.outputAudioMixerGroup;
+                }
+                audioSource.PlayOneShot(audioClip, 15f);
 
-                    if (notifyFinished)
-                    {
-                        await Task.Delay(audioClip.length.Milliseconds() + 250);
-                        ClipFinishedEvent?.Invoke();
-                    }
+                if (notifyFinished)
+                {
+                    await Task.Delay(audioClip.length.Milliseconds() + 250);
+                    ClipFinishedEvent?.Invoke();
                 }
             }
         }
