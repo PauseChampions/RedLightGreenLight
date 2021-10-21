@@ -1,10 +1,10 @@
-﻿using ReaxtIsASussyBaka.Configuration;
+﻿using RedLightGreenLight.Configuration;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace ReaxtIsASussyBaka.GameScene
+namespace RedLightGreenLight.GameScene
 {
     internal class RedLight : MonoBehaviour, IInitializable, IDisposable
     {

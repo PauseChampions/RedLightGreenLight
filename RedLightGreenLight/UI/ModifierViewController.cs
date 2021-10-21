@@ -1,11 +1,11 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.GameplaySetup;
-using ReaxtIsASussyBaka.Configuration;
+using RedLightGreenLight.Configuration;
 using System;
 using System.ComponentModel;
 using Zenject;
 
-namespace ReaxtIsASussyBaka.UI
+namespace RedLightGreenLight.UI
 {
     internal class ModifierViewController : IInitializable, IDisposable, INotifyPropertyChanged
     {
@@ -13,7 +13,7 @@ namespace ReaxtIsASussyBaka.UI
 
         public void Initialize()
         {
-            GameplaySetup.instance.AddTab("Hi", "ReaxtIsASussyBaka.UI.ModifierView.bsml", this, MenuType.Solo);
+            GameplaySetup.instance.AddTab("Hi", "RedLightGreenLight.UI.ModifierView.bsml", this, MenuType.Solo);
         }
 
         public void Dispose()

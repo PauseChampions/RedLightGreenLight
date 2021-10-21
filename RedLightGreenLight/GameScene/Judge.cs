@@ -1,9 +1,9 @@
-﻿using ReaxtIsASussyBaka.Configuration;
+﻿using RedLightGreenLight.Configuration;
 using System;
 using UnityEngine;
 using Zenject;
 
-namespace ReaxtIsASussyBaka.GameScene
+namespace RedLightGreenLight.GameScene
 {
     internal class Judge : MonoBehaviour, IInitializable, IDisposable
     {

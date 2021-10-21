@@ -1,8 +1,8 @@
-﻿using ReaxtIsASussyBaka.Configuration;
-using ReaxtIsASussyBaka.GameScene;
+﻿using RedLightGreenLight.Configuration;
+using RedLightGreenLight.GameScene;
 using Zenject;
 
-namespace ReaxtIsASussyBaka.Installers
+namespace RedLightGreenLight.Installers
 {
     internal class WeAreBackBackFromWhereInstaller : Installer
     {

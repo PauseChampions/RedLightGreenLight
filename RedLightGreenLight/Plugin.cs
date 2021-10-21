@@ -1,8 +1,8 @@
 ﻿using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
-using ReaxtIsASussyBaka.Installers;
-using ReaxtIsASussyBaka.UI;
+using RedLightGreenLight.Installers;
+using RedLightGreenLight.UI;
 using SiraUtil.Zenject;
 using System;
 using System.Collections;
@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
 
-namespace ReaxtIsASussyBaka
+namespace RedLightGreenLight
 {
     [Plugin(RuntimeOptions.DynamicInit)]
     public class Plugin
     {
         // TODO: If using Harmony, uncomment and change YourGitHub to the name of your GitHub account, or use the form "com.company.project.product"
         //       You must also add a reference to the Harmony assembly in the Libs folder.
-        // public const string HarmonyId = "com.github.YourGitHub.ReaxtIsASussyBaka";
+        // public const string HarmonyId = "com.github.YourGitHub.RedLightGreenLight";
         // internal static readonly HarmonyLib.Harmony harmony = new HarmonyLib.Harmony(HarmonyId);
 
         internal static Plugin Instance { get; private set; }

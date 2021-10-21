@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReaxtIsASussyBaka", "ReaxtIsASussyBaka\ReaxtIsASussyBaka.csproj", "{8D22D533-EC3F-44ED-A43C-9938349E292D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedLightGreenLight", "RedLightGreenLight\RedLightGreenLight.csproj", "{8D22D533-EC3F-44ED-A43C-9938349E292D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

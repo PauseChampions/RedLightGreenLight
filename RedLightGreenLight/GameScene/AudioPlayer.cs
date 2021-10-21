@@ -5,7 +5,7 @@ using System.IO;
 using IPA.Utilities;
 using System.Threading;
 
-namespace ReaxtIsASussyBaka.GameScene
+namespace RedLightGreenLight.GameScene
 {
     internal class AudioPlayer
     {

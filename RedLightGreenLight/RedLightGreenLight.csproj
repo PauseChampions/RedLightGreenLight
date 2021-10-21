@@ -23,15 +23,15 @@
 
 	<ItemGroup>
 		<Reference Include="BeatmapCore">
-		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
+		  <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
 		<Reference Include="MediaLoader">
-		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\MediaLoader.dll</HintPath>
+		  <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\MediaLoader.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.AudioModule">
-		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+		  <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.CoreModule">
@@ -39,11 +39,11 @@
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.InputLegacyModule">
-		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+		  <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.InputModule">
-		  <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+		  <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.InputModule.dll</HintPath>
 		  <Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.UI">
@@ -95,7 +95,7 @@
 	<ItemGroup>
 		<None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
 		<None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')" />
-		<None Include="ReaxtIsASussyBaka.csproj.user" Condition="Exists('ReaxtIsASussyBaka.csproj.user')" />
+		<None Include="RedLightGreenLight.csproj.user" Condition="Exists('RedLightGreenLight.csproj.user')" />
 	</ItemGroup>
 	
 	<ItemGroup>
