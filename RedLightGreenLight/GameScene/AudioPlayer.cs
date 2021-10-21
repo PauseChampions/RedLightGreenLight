@@ -51,7 +51,7 @@ namespace RedLightGreenLight.GameScene
 
                 if (notifyFinished)
                 {
-                    await Task.Delay(audioClip.length.Milliseconds() + 250);
+                    await Task.Delay(audioClip.length.TotalSeconds() * 1000 + audioClip.length.Milliseconds() + 125);
                     ClipFinishedEvent?.Invoke();
                 }
             }
