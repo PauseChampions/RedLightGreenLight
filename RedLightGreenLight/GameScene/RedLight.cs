@@ -14,6 +14,8 @@ namespace RedLightGreenLight.GameScene
         private System.Random rdm;
         private Queue<float> pausePoints;
 
+        private bool isEnabling;
+
         [Inject]
         public void Construct(AudioTimeSyncController audioTimeSyncController, BeatmapObjectCallbackController beatmapObjectCallbackController, Judge judge)
         {
@@ -62,14 +64,24 @@ namespace RedLightGreenLight.GameScene
         {
             if (audioTimeSyncController.songTime >= pausePoints.Peek())
             {
-                judge.StartTimer(PluginConfig.Instance.RedLightTime);
-                audioTimeSyncController.Pause();
-                pausePoints.Dequeue();
+                if (isEnabling)
+                {
+                    pausePoints.Dequeue();
+                }
+                else
+                {
+                    judge.StartTimer(PluginConfig.Instance.RedLightTime);
+                    audioTimeSyncController.Pause();
+                    isEnabling = true;
+                    pausePoints.Dequeue();
+                }
             }
         }
 
         private void OnRedLight()
         {
+            isEnabling = false;
+
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event0, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event2, 5, 1));
             beatmapObjectCallbackController.SendBeatmapEventDidTriggerEvent(new BeatmapEventData(audioTimeSyncController.songTime, BeatmapEventType.Event3, 5, 1));
