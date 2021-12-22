@@ -13,12 +13,12 @@ namespace RedLightGreenLight.UI
 
         public void Initialize()
         {
-            GameplaySetup.instance.AddTab("Hi", "RedLightGreenLight.UI.ModifierView.bsml", this, MenuType.Solo);
+            GameplaySetup.instance.AddTab("RedLight", "RedLightGreenLight.UI.ModifierView.bsml", this, MenuType.Solo);
         }
 
         public void Dispose()
         {
-            GameplaySetup.instance?.RemoveTab("Hi");
+            GameplaySetup.instance?.RemoveTab("RedLight");
         }
 
         [UIValue("mod-enabled")]
