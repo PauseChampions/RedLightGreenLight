@@ -13,7 +13,7 @@ namespace RedLightGreenLight.UI
 
         public void Initialize()
         {
-            GameplaySetup.instance.AddTab("RedLight", "RedLightGreenLight.UI.ModifierView.bsml", this, MenuType.Solo);
+            GameplaySetup.instance.AddTab("RedLight", "RedLightGreenLight.UI.ModifierView.bsml", this, MenuType.Solo | MenuType.Campaign | MenuType.Custom);
         }
 
         public void Dispose()
