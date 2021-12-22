@@ -37,8 +37,8 @@ namespace RedLightGreenLight
             Instance = this;
             Plugin.Log = logger;
             Plugin.Log?.Debug("Logger initialized.");
-            zenjector.On<MainSettingsMenuViewControllersInstaller>().Pseudo(Container => Container.BindInterfacesTo<ModifierViewController>().AsSingle());
-            zenjector.OnGame<WeAreBackBackFromWhereInstaller>().OnlyForStandard();
+            zenjector.Install(Location.Menu, Container => Container.BindInterfacesTo<ModifierViewController>().AsSingle());
+            zenjector.Install<WeAreBackBackFromWhereInstaller>(Location.StandardPlayer);
         }
 
         #region BSIPA Config
