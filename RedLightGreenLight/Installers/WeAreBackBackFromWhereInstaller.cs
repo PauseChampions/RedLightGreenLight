@@ -8,7 +8,7 @@ namespace RedLightGreenLight.Installers
     {
         public override void InstallBindings()
         {
-            if (PluginConfig.Instance.ModEnabled)
+            if (PluginConfig.Instance.ModEnabled && AudioPlayer.ShouldInitialize())
             {
                 Container.BindInterfacesAndSelfTo<RedLight>().FromNewComponentOnRoot().AsSingle();
                 Container.BindInterfacesAndSelfTo<Judge>().FromNewComponentOnRoot().AsSingle();

@@ -5,7 +5,7 @@
   "author": "Electrostats and PixelBoom",
   "version": "1.0.0",
   "description": "Sus",
-  "gameVersion": "1.18.0",
+  "gameVersion": "1.19.0",
     "dependsOn": {
         "BSIPA": "^4.2.0",
         "BeatSaberMarkupLanguage": "^1.6.0",

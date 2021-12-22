@@ -1,12 +1,16 @@
 ﻿using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
+using IPA.Utilities;
+using RedLightGreenLight.GameScene;
 using RedLightGreenLight.Installers;
 using RedLightGreenLight.UI;
 using SiraUtil.Zenject;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -18,11 +22,6 @@ namespace RedLightGreenLight
     [Plugin(RuntimeOptions.DynamicInit)]
     public class Plugin
     {
-        // TODO: If using Harmony, uncomment and change YourGitHub to the name of your GitHub account, or use the form "com.company.project.product"
-        //       You must also add a reference to the Harmony assembly in the Libs folder.
-        // public const string HarmonyId = "com.github.YourGitHub.RedLightGreenLight";
-        // internal static readonly HarmonyLib.Harmony harmony = new HarmonyLib.Harmony(HarmonyId);
-
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
 
@@ -36,7 +35,6 @@ namespace RedLightGreenLight
         {
             Instance = this;
             Plugin.Log = logger;
-            Plugin.Log?.Debug("Logger initialized.");
             zenjector.Install(Location.Menu, Container => Container.BindInterfacesTo<ModifierViewController>().AsSingle());
             zenjector.Install<WeAreBackBackFromWhereInstaller>(Location.StandardPlayer);
         }
@@ -47,7 +45,6 @@ namespace RedLightGreenLight
         public void InitWithConfig(Config conf)
         {
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Plugin.Log?.Debug("Config loaded");
         }
         #endregion
 
@@ -60,7 +57,43 @@ namespace RedLightGreenLight
         [OnEnable]
         public void OnEnable()
         {
-            //ApplyHarmonyPatches();
+            if (!AudioPlayer.ShouldInitialize())
+            {
+                ExtractZip();
+            }
+        }
+
+        private async void ExtractZip()
+        {
+            byte[] zip = BeatSaberMarkupLanguage.Utilities.GetResource(Assembly.GetExecutingAssembly(), "RedLightGreenLight.RedLightGreenLight.zip");
+            Stream zipStream = new MemoryStream(zip);
+            try
+            {
+                ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
+                string path = AudioPlayer.rootDir.Parent.FullName;
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                await Task.Run(() =>
+                {
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (!string.IsNullOrWhiteSpace(entry.Name))
+                        {
+                            FileInfo file = new FileInfo(Path.Combine(path, entry.FullName));
+                            if (!Directory.Exists(file.DirectoryName))
+                                Directory.CreateDirectory(file.DirectoryName);
+                            entry.ExtractToFile(file.FullName, true);
+                        }
+                    }
+                }).ConfigureAwait(false);
+                archive.Dispose();
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.Error($"Unable to extract ZIP! Exception: {e}");
+                return;
+            }
+            zipStream.Close();
         }
 
         /// <summary>
@@ -71,60 +104,8 @@ namespace RedLightGreenLight
         [OnDisable]
         public void OnDisable()
         {
-            //RemoveHarmonyPatches();
         }
 
-        /*
-        /// <summary>
-        /// Called when the plugin is disabled and on Beat Saber quit.
-        /// Return Task for when the plugin needs to do some long-running, asynchronous work to disable.
-        /// [OnDisable] methods that return Task are called after all [OnDisable] methods that return void.
-        /// </summary>
-        [OnDisable]
-        public async Task OnDisableAsync()
-        {
-            await LongRunningUnloadTask().ConfigureAwait(false);
-        }
-        */
-        #endregion
-
-        // Uncomment the methods in this section if using Harmony
-        #region Harmony
-        /*
-        /// <summary>
-        /// Attempts to apply all the Harmony patches in this assembly.
-        /// </summary>
-        internal static void ApplyHarmonyPatches()
-        {
-            try
-            {
-                Plugin.Log?.Debug("Applying Harmony patches.");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
-            }
-            catch (Exception ex)
-            {
-                Plugin.Log?.Error("Error applying Harmony patches: " + ex.Message);
-                Plugin.Log?.Debug(ex);
-            }
-        }
-
-        /// <summary>
-        /// Attempts to remove all the Harmony patches that used our HarmonyId.
-        /// </summary>
-        internal static void RemoveHarmonyPatches()
-        {
-            try
-            {
-                // Removes all patches with this HarmonyId
-                harmony.UnpatchAll(HarmonyId);
-            }
-            catch (Exception ex)
-            {
-                Plugin.Log?.Error("Error removing Harmony patches: " + ex.Message);
-                Plugin.Log?.Debug(ex);
-            }
-        }
-        */
         #endregion
     }
 }

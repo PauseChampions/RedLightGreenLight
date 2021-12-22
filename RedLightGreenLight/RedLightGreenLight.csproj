@@ -96,6 +96,7 @@
 	
 	<ItemGroup>
 		<EmbeddedResource Include="manifest.json" />
+		<EmbeddedResource Include="RedLightGreenLight.zip" />
 		<EmbeddedResource Include="UI\ModifierView.bsml" />
 		<EmbeddedResource Include="Images\*.png" />
 		<EmbeddedResource Include="UI\Views\*.bsml" />
@@ -103,6 +104,7 @@
 	
 	<ItemGroup>
 	  <None Remove="Images\Skalx.jpg" />
+	  <None Remove="RedLightGreenLight.zip" />
 	  <None Remove="UI\ModifierView.bsml" />
 	</ItemGroup>
 
